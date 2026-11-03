@@ -1,0 +1,70 @@
+IF DB_ID('MarketAutomation') IS NULL
+    CREATE DATABASE MarketAutomation;
+GO
+
+USE MarketAutomation;
+GO
+
+CREATE TABLE Users (
+    Id INT IDENTITY PRIMARY KEY,
+    Username NVARCHAR(50) NOT NULL UNIQUE,
+    PasswordHash NVARCHAR(200) NOT NULL,
+    IsAdmin BIT NOT NULL
+);
+
+CREATE TABLE Units (
+    Id INT IDENTITY PRIMARY KEY,
+    Name NVARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Categories (
+    Id INT IDENTITY PRIMARY KEY,
+    Name NVARCHAR(50) NOT NULL,
+    VatRate INT NOT NULL
+);
+
+CREATE TABLE Brands (
+    Id INT IDENTITY PRIMARY KEY,
+    Name NVARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Suppliers (
+    Id INT IDENTITY PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL,
+    Address NVARCHAR(250) NULL,
+    Phone NVARCHAR(20) NULL
+);
+
+CREATE TABLE Customers (
+    Id INT IDENTITY PRIMARY KEY,
+    NationalId NVARCHAR(11) NULL,
+    Name NVARCHAR(100) NOT NULL,
+    Address NVARCHAR(250) NULL,
+    Phone NVARCHAR(20) NULL
+);
+
+CREATE TABLE Products (
+    Id INT IDENTITY PRIMARY KEY,
+    Code NVARCHAR(50) NOT NULL,
+    Description NVARCHAR(250) NOT NULL,
+    SalePrice DECIMAL(18, 2) NOT NULL,
+    PurchasePrice DECIMAL(18, 2) NOT NULL,
+    Stock INT NOT NULL,
+    UnitId INT NOT NULL REFERENCES Units (Id) ON DELETE CASCADE,
+    CategoryId INT NOT NULL REFERENCES Categories (Id) ON DELETE CASCADE,
+    BrandId INT NOT NULL REFERENCES Brands (Id) ON DELETE CASCADE,
+    SupplierId INT NOT NULL REFERENCES Suppliers (Id) ON DELETE CASCADE
+);
+
+CREATE TABLE DailyReports (
+    Id INT IDENTITY PRIMARY KEY,
+    ReportDate DATE NOT NULL UNIQUE,
+    CardTotal DECIMAL(18, 2) NOT NULL,
+    CashTotal DECIMAL(18, 2) NOT NULL,
+    CheckTotal DECIMAL(18, 2) NOT NULL,
+    Revenue DECIMAL(18, 2) NOT NULL
+);
+
+INSERT INTO Users (Username, PasswordHash, IsAdmin)
+VALUES ('admin', '100000.Dvtkdo57LxEAuoVAODyyYw==.ukY67e9vVmZgW1HJPUn6Cb3PktsvXay37vFTuLgyiC4=', 1);
+GO
